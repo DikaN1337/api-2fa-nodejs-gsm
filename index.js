@@ -1,9 +1,18 @@
 let serialportgsm = require('serialport-gsm');
 let modem = serialportgsm.Modem();
 
+const config = require('config');
 const express = require('express');  
 const app = express();
-let port = 5013;
+const port = config.get('port');
+const pincode = config.get('pincode');
+const apikeyconfig = config.get('apikey');
+const numberowner = config.get('numberowner');
+const countrycode = config.get('countrycode');
+const serialportid = config.get('serialportid');
+const twofaname = config.get('twofaname');
+const expireminutes = config.get('expireminutes');
+const supportsite = config.get('supportsite');
 
 app.use(express.static('public'));  
 
@@ -20,24 +29,24 @@ const options = {
 	enableConcatenation: true,
 	incomingCallIndication: true,
 	incomingSMSIndication: true,
-	pin: '2525',
+	pin: pincode,
 	customInitCommand: ''
 }
 
-modem.open('COM5', options, {});
+modem.open(serialportid, options, {});
 
-const server = app.listen(5013, function () {  
-    console.log("2FA API listened at http://127.0.0.1:5013/");
+const server = app.listen(port, function () {  
+    console.log("2FA API listened at http://127.0.0.1:" + port + "/");
 });
 
 app.get('/send2facode', function (req, res) {  
         const apikey = req.query.apikey;
 		const number = req.query.number;
         const code = req.query.code;
-		const text = "O teu Codigo da EXPOSIT.XYZ é " + code + ". Expira em 5 minutos!";
+		const text = "O teu codigo da " + twofaname + " é " + code + ". Expira em " + expireminutes + " minutos!";
 
-        if (apikey === "JBJHSiJbM5sN6YOaQFWzlp7q0n9vBGW92JVL9f3N") {
-            modem.sendSMS('+351' + number, text, false, (data) => {});
+        if (apikey === apikeyconfig) {
+            modem.sendSMS('+' + countrycode + number, text, false, (data) => {});
             const response  = [{
 				code: 200, 
 				message: 'success'
@@ -57,7 +66,7 @@ modem.on('open', data => {
     modem.initializeModem((data) => {
 		modem.getOwnNumber((dataNumber) => {
 			console.log("Modem ON with the number: " + dataNumber.data.number + "!");
-			modem.sendSMS('+351963681103', 'Modem ON!', false, (data) => {});
+			modem.sendSMS('+' + countrycode + numberowner, 'Modem ON!', false, (data) => {});
 		});
     })
 });
@@ -66,5 +75,5 @@ modem.on('onNewIncomingCall', result => {
 	modem.executeCommand("ATA", (data) => {});
 	modem.executeCommand("ATH", (data) => {});
 	let numberCalled = result.data.number;
-	modem.sendSMS('+351' + numberCalled, 'Obrigado por ligares para a EXPOSIT.XYZ, este numero não permite receber chamadas. Entra em contacto pelo nosso Website em https://support.exposit.xyz/ !', false, (data) => {});
+	modem.sendSMS('+' + countrycode + numberCalled, 'Obrigado por ligares para a ' + twofaname + ', este numero não permite receber chamadas. Entra em contacto pelo nosso Website em ' + supportsite + ' !', false, (data) => {});
 });

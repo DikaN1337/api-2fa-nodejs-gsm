@@ -1,0 +1,11 @@
+{
+	"port": "5013", // Port to listen the API.
+	"pincode": "0000", // SIM Card PIN Code.
+	"apikey": "APIKEY", // Generate a strong API Key.
+	"numberowner": "900000000", // Number to recieve Test messages from the GSM USB 800c.
+	"countrycode" : "351", // Did not test with other country codes...
+	"serialportid": "COM5", // Confirm the COM port, the GSM USB 800c is connected to. If it is Linux check for the /dev location of the GSM USB 800c.
+	"twofaname": "EXPOSIT.XYZ",
+	"expireminutes": "5",
+	"supportsite": "https://support.exposit.xyz/"
+}
