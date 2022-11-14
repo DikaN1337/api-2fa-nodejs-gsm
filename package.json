@@ -1,0 +1,12 @@
+{
+  "name": "API-2FA-NodeJS-GSM-800c",
+  "version": "1.2",
+  "description": "API for 2FA using GSM USB (800c CHIP) in NodeJS",
+  "main": "index.js",
+  "author": "DikaN",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serialport-gsm": "^3.4.1"
+  }
+}
